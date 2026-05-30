@@ -1,0 +1,71 @@
+<div
+  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-800 via-blue-600 to-blue-500 px-4 py-10"
+>
+  <div class="w-full max-w-md">
+    <div
+      class="bg-white rounded-2xl shadow-2xl border border-blue-100 overflow-hidden"
+    >
+      <div class="bg-blue-600 px-8 py-7 text-center">
+        <h1 class="text-3xl font-bold text-white tracking-tight">Login</h1>
+        <p class="text-blue-100 text-sm mt-2">Ingresa tus credenciales</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="px-8 py-8 space-y-6">
+        <div>
+          <label
+            for="nombreUsuario"
+            class="block text-sm font-semibold text-blue-900 mb-2"
+          >
+            Usuario
+          </label>
+          <input
+            id="nombreUsuario"
+            name="nombreUsuario"
+            type="text"
+            required
+            autocomplete="username"
+            [(ngModel)]="nombreUsuario"
+            class="w-full rounded-lg border-2 border-blue-100 bg-blue-50/50 px-4 py-3 text-gray-900 placeholder:text-blue-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-200 transition"
+            placeholder="admin"
+          />
+        </div>
+
+        <div>
+          <label
+            for="contrasena"
+            class="block text-sm font-semibold text-blue-900 mb-2"
+          >
+            Contraseña
+          </label>
+          <input
+            id="contrasena"
+            name="contrasena"
+            type="password"
+            required
+            autocomplete="current-password"
+            [(ngModel)]="contrasena"
+            class="w-full rounded-lg border-2 border-blue-100 bg-blue-50/50 px-4 py-3 text-gray-900 placeholder:text-blue-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-200 transition"
+            placeholder="••••••••"
+          />
+        </div>
+
+        @if (errorMessage) {
+          <div
+            class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-center"
+            role="alert"
+          >
+            <p class="text-sm font-medium text-red-700">{{ errorMessage }}</p>
+          </div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="loading"
+          class="w-full rounded-lg bg-blue-600 px-4 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:shadow-blue-700/40 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none transition-all"
+        >
+          {{ loading ? 'Ingresando...' : 'Ingresar' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

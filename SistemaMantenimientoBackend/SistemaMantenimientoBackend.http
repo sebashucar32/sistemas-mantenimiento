@@ -1,0 +1,6 @@
+@SistemaMantenimientoBackend_HostAddress = http://localhost:5134
+
+GET {{SistemaMantenimientoBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
