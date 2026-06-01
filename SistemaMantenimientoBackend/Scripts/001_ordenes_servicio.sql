@@ -1,32 +1,29 @@
--- Script de base de datos para OrdenServicio
--- Base de datos: sistema_mantenimiento (PostgreSQL)
+-- =============================================================================
+-- Sistema de Mantenimiento - Script inicial (PostgreSQL)
+-- Base de datos: sistema_mantenimiento
+--
+-- Ejecutar desde la raíz del proyecto:
+--   psql -U postgres -f Scripts/001_ordenes_servicio.sql
+--
+-- Credenciales de prueba tras ejecutar el script:
+--   Usuario: admin
+--   Contraseña: Admin123!
+-- =============================================================================
 
--- Crear la base de datos si no existe
-CREATE DATABASE IF NOT EXISTS sistema_mantenimiento;
-USE sistema_mantenimiento;
+-- 1. Crear la base de datos si no existe (comandos psql)
+SELECT 'CREATE DATABASE sistema_mantenimiento'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'sistema_mantenimiento')\gexec
 
-CREATE TABLE IF NOT EXISTS public.usuarios (
+\c sistema_mantenimiento
+
+-- 2. Tablas
+CREATE TABLE IF NOT EXISTS usuarios (
     id SERIAL PRIMARY KEY,
     nombre_usuario VARCHAR(50) NOT NULL UNIQUE,
     hash_contrasena VARCHAR(255) NOT NULL,
     nombre_completo VARCHAR(150) NOT NULL,
     correo_electronico VARCHAR(150),
     activo BOOLEAN NOT NULL DEFAULT TRUE
-);
-
-INSERT INTO usuarios (
-    nombre_usuario,
-    hash_contrasena,
-    nombre_completo,
-    correo_electronico,
-    activo
-)
-VALUES (
-    'admin',
-    '$2a$11$v8rkcZNGmWoWF.z2rALR5u1N2dX0YTAondp2LWsJRU9v4Z./KXPY2',
-    'Administrador',
-    'admin@example.com',
-    TRUE
 );
 
 CREATE TABLE IF NOT EXISTS clientes (
@@ -59,23 +56,31 @@ CREATE TABLE IF NOT EXISTS ordenes_servicio (
     cliente_id INT NOT NULL REFERENCES clientes(id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_ordenes_servicio_cliente ON ordenes_servicio(cliente_id);
-CREATE INDEX IF NOT EXISTS idx_ordenes_servicio_tecnico ON ordenes_servicio(tecnico_id);
-CREATE INDEX IF NOT EXISTS idx_ordenes_servicio_estado ON ordenes_servicio(estado);
+CREATE INDEX IF NOT EXISTS idx_ordenes_servicio_cliente ON ordenes_servicio (cliente_id);
+CREATE INDEX IF NOT EXISTS idx_ordenes_servicio_tecnico ON ordenes_servicio (tecnico_id);
+CREATE INDEX IF NOT EXISTS idx_ordenes_servicio_estado ON ordenes_servicio (estado);
 
--- Datos de ejemplo (ejecutar solo si las tablas están vacías)
+-- 3. Datos iniciales (un registro por entidad; idempotente)
+INSERT INTO usuarios (nombre_usuario, hash_contrasena, nombre_completo, correo_electronico, activo)
+SELECT
+    'admin',
+    '$2a$11$v8rkcZNGmWoWF.z2rALR5u1N2dX0YTAondp2LWsJRU9v4Z./KXPY2',
+    'Administrador',
+    'admin@example.com',
+    TRUE
+WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE nombre_usuario = 'admin');
+
 INSERT INTO clientes (nombre, documento_identidad, direccion, telefono)
 SELECT 'Empresa ABC S.A.', '900123456-1', 'Calle 100 # 20-30, Bogotá', '3001234567'
 WHERE NOT EXISTS (SELECT 1 FROM clientes);
-
-INSERT INTO clientes (nombre, documento_identidad, direccion, telefono)
-SELECT 'Comercial XYZ Ltda.', '800987654-3', 'Av. El Dorado # 68-40, Bogotá', '3109876543'
-WHERE NOT EXISTS (SELECT 1 FROM clientes WHERE nombre = 'Comercial XYZ Ltda.');
 
 INSERT INTO tecnicos (nombre, telefono, especialidad)
 SELECT 'Carlos Méndez', '3201112233', 'Mecánica industrial'
 WHERE NOT EXISTS (SELECT 1 FROM tecnicos);
 
-INSERT INTO tecnicos (nombre, telefono, especialidad)
-SELECT 'Ana Torres', '3154445566', 'Electricidad'
-WHERE NOT EXISTS (SELECT 1 FROM tecnicos WHERE nombre = 'Ana Torres');
+INSERT INTO ordenes_servicio (descripcion, tecnico_id, cliente_id)
+SELECT
+    'Mantenimiento preventivo de equipos industriales.',
+    (SELECT id FROM tecnicos LIMIT 1),
+    (SELECT id FROM clientes LIMIT 1)
+WHERE NOT EXISTS (SELECT 1 FROM ordenes_servicio);

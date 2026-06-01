@@ -1,0 +1,42 @@
+<header
+  class="flex h-16 items-center justify-between border-b border-blue-100 bg-white px-4 shadow-sm"
+>
+  <div class="flex items-center gap-3">
+    <button
+      type="button"
+      (click)="layoutService.toggleSidebar()"
+      class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-blue-700 transition hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+      [attr.aria-expanded]="!layoutService.sidebarCollapsed()"
+      aria-label="Alternar menú lateral"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        class="h-5 w-5"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+    </button>
+
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-wider text-blue-500">
+        Sistema
+      </p>
+      <h1 class="text-lg font-bold text-blue-900">Mantenimiento</h1>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <span class="hidden text-sm text-gray-600 sm:inline">Administrador</span>
+    <div
+      class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white"
+      aria-hidden="true"
+    >
+      A
+    </div>
+  </div>
+</header>

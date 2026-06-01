@@ -6,7 +6,6 @@ C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\De
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\Debug\net10.0\SistemaMantenimientoBackend.runtimeconfig.json
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\Debug\net10.0\SistemaMantenimientoBackend.dll
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\Debug\net10.0\SistemaMantenimientoBackend.pdb
-C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\Debug\net10.0\BCrypt-Net-Next.dll
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\Debug\net10.0\Dapper.dll
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
@@ -42,3 +41,5 @@ C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\obj\De
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\obj\Debug\net10.0\SistemaMantenimientoBackend.pdb
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\obj\Debug\net10.0\SistemaMantenimientoBackend.genruntimeconfig.cache
 C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\obj\Debug\net10.0\ref\SistemaMantenimientoBackend.dll
+C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\obj\Debug\net10.0\SistemaMantenimientoBackend.sourcelink.json
+C:\Sebastian\PruebasTecnicas\FullStackYeminus\SistemaMantenimientoBackend\bin\Debug\net10.0\BCrypt.Net-Next.dll

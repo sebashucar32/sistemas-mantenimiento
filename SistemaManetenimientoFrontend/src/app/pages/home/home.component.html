@@ -1,0 +1,28 @@
+<div
+  class="grid min-h-screen"
+  style="
+    grid-template-areas:
+      'header header'
+      'sidebar body'
+      'footer footer';
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr auto;
+  "
+>
+  <app-header style="grid-area: header" />
+  <app-sidebar style="grid-area: sidebar" />
+  <app-body style="grid-area: body">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      @for (card of summaryCards(); track card.title) {
+        <article
+          class="rounded-lg border border-blue-100 bg-blue-50/40 p-4"
+        >
+          <p class="text-sm font-medium text-blue-700">{{ card.title }}</p>
+          <p class="mt-2 text-3xl font-bold text-blue-900">{{ card.value }}</p>
+          <p class="mt-1 text-xs text-gray-500">{{ card.description }}</p>
+        </article>
+      }
+    </div>
+  </app-body>
+  <app-footer style="grid-area: footer" />
+</div>

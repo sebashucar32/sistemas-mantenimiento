@@ -1,0 +1,399 @@
+<div
+  class="grid min-h-screen"
+  style="
+    grid-template-areas:
+      'header header'
+      'sidebar body'
+      'footer footer';
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr auto;
+  "
+>
+  <app-header style="grid-area: header" />
+  <app-sidebar style="grid-area: sidebar" />
+  <app-body
+    style="grid-area: body"
+    title="Órdenes y servicios"
+    subtitle="Gestiona las órdenes de servicio del sistema"
+  >
+    <div class="space-y-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <label for="filtroEstado" class="text-sm font-medium text-gray-700">
+            Filtrar por estado
+          </label>
+          <select
+            id="filtroEstado"
+            [ngModel]="filtroEstado()"
+            (ngModelChange)="filtroEstado.set($event); aplicarFiltroEstado()"
+            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          >
+            <option value="">Todos</option>
+            @for (estado of estados; track estado.value) {
+              <option [value]="estado.value">{{ estado.label }}</option>
+            }
+          </select>
+        </div>
+
+        <button
+          type="button"
+          (click)="abrirCrear()"
+          class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
+        >
+          Nueva orden
+        </button>
+      </div>
+
+      @if (errorMessage() && !modalMode()) {
+        <div
+          class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          role="alert"
+        >
+          {{ errorMessage() }}
+        </div>
+      }
+
+      @if (loading()) {
+        <p class="text-sm text-gray-500">Cargando órdenes...</p>
+      } @else if (ordenes().length === 0) {
+        <p class="text-sm text-gray-500">No hay órdenes registradas.</p>
+      } @else {
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-3 text-left font-semibold text-gray-700">ID</th>
+                <th class="px-4 py-3 text-left font-semibold text-gray-700">
+                  Fecha creación
+                </th>
+                <th class="px-4 py-3 text-left font-semibold text-gray-700">Estado</th>
+                <th class="px-4 py-3 text-left font-semibold text-gray-700">
+                  Descripción
+                </th>
+                <th class="px-4 py-3 text-left font-semibold text-gray-700">Técnico</th>
+                <th class="px-4 py-3 text-left font-semibold text-gray-700">Cliente</th>
+                <th class="px-4 py-3 text-left font-semibold text-gray-700">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 bg-white">
+              @for (orden of ordenes(); track orden.id) {
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-3 font-medium text-gray-900">{{ orden.id }}</td>
+                  <td class="px-4 py-3 text-gray-600">
+                    {{ orden.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <span
+                      class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"
+                      [class]="claseEstado(orden.estado)"
+                    >
+                      {{ orden.estadoDescripcion }}
+                    </span>
+                  </td>
+                  <td class="max-w-xs truncate px-4 py-3 text-gray-600">
+                    {{ orden.descripcion }}
+                  </td>
+                  <td class="px-4 py-3 text-gray-600">
+                    <span class="block font-medium text-gray-900">{{
+                      orden.tecnicoNombre
+                    }}</span>
+                    <span class="text-xs text-gray-500">{{
+                      orden.tecnicoEspecialidad
+                    }}</span>
+                  </td>
+                  <td class="px-4 py-3 text-gray-600">
+                    <span class="block font-medium text-gray-900">{{
+                      orden.clienteNombre
+                    }}</span>
+                    <span class="text-xs text-gray-500">{{
+                      orden.clienteDocumentoIdentidad
+                    }}</span>
+                  </td>
+                  <td class="px-4 py-3">
+                    <div class="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        (click)="abrirConsultar(orden)"
+                        class="rounded border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100"
+                      >
+                        Consultar
+                      </button>
+                      <button
+                        type="button"
+                        (click)="abrirEditar(orden)"
+                        class="rounded border border-blue-200 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        (click)="abrirCambiarEstado(orden)"
+                        class="rounded border border-amber-200 px-2 py-1 text-xs font-medium text-amber-700 hover:bg-amber-50"
+                      >
+                        Estado
+                      </button>
+                      <button
+                        type="button"
+                        (click)="abrirEliminar(orden)"
+                        class="rounded border border-red-200 px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </app-body>
+  <app-footer style="grid-area: footer" />
+</div>
+
+@if (modalMode()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+    (click)="cerrarModal()"
+  >
+    <div
+      class="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="mb-4 border-b border-gray-100 pb-3">
+        <h3 class="text-lg font-bold text-gray-900">{{ tituloModal() }}</h3>
+      </header>
+
+      @if (errorMessage()) {
+        <div
+          class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          role="alert"
+        >
+          {{ errorMessage() }}
+        </div>
+      }
+
+      @if (modalMode() === 'consultar' && ordenSeleccionada(); as orden) {
+        <dl class="space-y-3 text-sm">
+          <div>
+            <dt class="font-semibold text-gray-700">ID</dt>
+            <dd class="text-gray-900">{{ orden.id }}</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-gray-700">Fecha de creación</dt>
+            <dd class="text-gray-900">
+              {{ orden.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}
+            </dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-gray-700">Estado</dt>
+            <dd>
+              <span
+                class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"
+                [class]="claseEstado(orden.estado)"
+              >
+                {{ orden.estadoDescripcion }}
+              </span>
+            </dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-gray-700">Descripción</dt>
+            <dd class="text-gray-900">{{ orden.descripcion }}</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-gray-700">Técnico asignado</dt>
+            <dd class="text-gray-900">
+              {{ orden.tecnicoNombre }} ({{ orden.tecnicoEspecialidad }})
+            </dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-gray-700">Cliente asociado</dt>
+            <dd class="text-gray-900">
+              {{ orden.clienteNombre }} — {{ orden.clienteDocumentoIdentidad }}
+            </dd>
+          </div>
+        </dl>
+      }
+
+      @if (modalMode() === 'crear' || modalMode() === 'editar') {
+        <form class="space-y-4" (ngSubmit)="guardar()">
+          <div>
+            <label for="descripcion" class="mb-1 block text-sm font-semibold text-gray-700">
+              Descripción
+            </label>
+            <textarea
+              id="descripcion"
+              rows="3"
+              required
+              [ngModel]="formulario().descripcion"
+              (ngModelChange)="actualizarFormulario('descripcion', $event)"
+              name="descripcion"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            ></textarea>
+          </div>
+
+          <div>
+            <label for="tecnicoId" class="mb-1 block text-sm font-semibold text-gray-700">
+              Técnico asignado
+            </label>
+            <select
+              id="tecnicoId"
+              required
+              [ngModel]="formulario().tecnicoId"
+              (ngModelChange)="actualizarFormulario('tecnicoId', $event ? +$event : null)"
+              name="tecnicoId"
+              class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              <option [ngValue]="null">Seleccione un técnico</option>
+              @for (tecnico of tecnicos(); track tecnico.id) {
+                <option [ngValue]="tecnico.id">
+                  {{ tecnico.nombre }} — {{ tecnico.especialidad }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label for="clienteId" class="mb-1 block text-sm font-semibold text-gray-700">
+              Cliente asociado
+            </label>
+            <select
+              id="clienteId"
+              required
+              [ngModel]="formulario().clienteId"
+              (ngModelChange)="actualizarFormulario('clienteId', $event ? +$event : null)"
+              name="clienteId"
+              class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              <option [ngValue]="null">Seleccione un cliente</option>
+              @for (cliente of clientes(); track cliente.id) {
+                <option [ngValue]="cliente.id">
+                  {{ cliente.nombre }} — {{ cliente.documentoIdentidad }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label for="estado" class="mb-1 block text-sm font-semibold text-gray-700">
+              Estado
+            </label>
+            <select
+              id="estado"
+              required
+              [ngModel]="formulario().estado"
+              (ngModelChange)="actualizarFormulario('estado', $event)"
+              name="estado"
+              class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              @for (estado of estados; track estado.value) {
+                <option [ngValue]="estado.value">{{ estado.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              (click)="cerrarModal()"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              [disabled]="saving()"
+              class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ saving() ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      }
+
+      @if (modalMode() === 'estado' && ordenSeleccionada(); as orden) {
+        <div class="space-y-4">
+          <p class="text-sm text-gray-600">
+            Orden #{{ orden.id }} — estado actual:
+            <span class="font-medium text-gray-900">{{ orden.estadoDescripcion }}</span>
+          </p>
+
+          <div>
+            <label for="nuevoEstado" class="mb-1 block text-sm font-semibold text-gray-700">
+              Nuevo estado
+            </label>
+            <select
+              id="nuevoEstado"
+              [ngModel]="nuevoEstado()"
+              (ngModelChange)="nuevoEstado.set($event)"
+              name="nuevoEstado"
+              class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              @for (estado of estados; track estado.value) {
+                <option [ngValue]="estado.value">{{ estado.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="flex justify-end gap-2">
+            <button
+              type="button"
+              (click)="cerrarModal()"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              (click)="confirmarCambioEstado()"
+              [disabled]="saving()"
+              class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ saving() ? 'Actualizando...' : 'Cambiar estado' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (modalMode() === 'eliminar' && ordenSeleccionada(); as orden) {
+        <div class="space-y-4">
+          <p class="text-sm text-gray-600">
+            ¿Confirma que desea eliminar la orden #{{ orden.id }}?
+            Esta acción no se puede deshacer.
+          </p>
+
+          <div class="flex justify-end gap-2">
+            <button
+              type="button"
+              (click)="cerrarModal()"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              (click)="confirmarEliminar()"
+              [disabled]="saving()"
+              class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ saving() ? 'Eliminando...' : 'Eliminar' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (modalMode() === 'consultar') {
+        <div class="mt-4 flex justify-end">
+          <button
+            type="button"
+            (click)="cerrarModal()"
+            class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Cerrar
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -1,11 +1,37 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { BodyComponent } from '../../layout/body/body.component';
+import { FooterComponent } from '../../layout/footer/footer.component';
+import { HeaderComponent } from '../../layout/header/header.component';
+import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
+
+interface SummaryCard {
+  title: string;
+  value: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-home',
-  template: `
-    <div class="min-h-screen bg-white flex items-center justify-center">
-      <h1 class="text-3xl font-semibold text-gray-800">Hola</h1>
-    </div>
-  `,
+  imports: [HeaderComponent, SidebarComponent, BodyComponent, FooterComponent],
+  templateUrl: './home.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {}
+export class HomeComponent {
+  readonly summaryCards = signal<SummaryCard[]>([
+    {
+      title: 'Equipos activos',
+      value: '24',
+      description: 'Registrados en el sistema',
+    },
+    {
+      title: 'Mantenimientos pendientes',
+      value: '7',
+      description: 'Programados esta semana',
+    },
+    {
+      title: 'Órdenes completadas',
+      value: '156',
+      description: 'En el último mes',
+    },
+  ]);
+}
